@@ -1,0 +1,9 @@
+FROM node:alpine
+WORKDIR /app
+COPY tsconfig.json ./
+# COPY tslint.json /app/tslint.json
+COPY package*.json ./
+# COPY package-lock.json /app/package-lock.json
+RUN npm install --silent
+COPY . ./
+CMD ["npm", "run", "start"]

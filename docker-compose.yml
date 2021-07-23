@@ -1,0 +1,31 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:12.1
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_HOST: host.docker.internal
+      POSTGRES_USER: marie
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+  api:
+    depends_on:
+      - postgres
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    environment:
+      POSTGRES_HOST: host.docker.internal
+      POSTGRES_USER: marie
+      POSTGRES_DATABASE: budget_nest
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports: ["8080:80"]
